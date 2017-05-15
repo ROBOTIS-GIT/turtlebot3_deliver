@@ -1,0 +1,3 @@
+uint32 robot_number
+uint32 item_number
+uint32 service_status

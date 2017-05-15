@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <name>turtlebot3_carrier_icra2017</name>
+  <version>0.0.1</version>
+  <description>The turtlebot3_carrier_icra2017 package</description>
+
+  <maintainer email="rwjung@robotis.com">leon</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>turtlebot3_msgs</build_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>turtlebot3_msgs</run_depend>
+
+  <export> </export>
+</package>
