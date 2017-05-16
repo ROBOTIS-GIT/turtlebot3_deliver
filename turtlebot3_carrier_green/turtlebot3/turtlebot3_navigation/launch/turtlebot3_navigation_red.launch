@@ -1,7 +1,7 @@
 <launch>
   <group ns="tb3r">
-  <remap from="/tf" to="/tb3g/tf"/>
-  <remap from="/tf_static" to="/tb3g/tf_static"/>
+  <remap from="/tf" to="/tb3r/tf"/>
+  <remap from="/tf_static" to="/tb3r/tf_static"/>
   <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle]"/>
 
   <!-- Turtlebot3 -->
