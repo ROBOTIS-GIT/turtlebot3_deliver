@@ -1,0 +1,6 @@
+<launch>
+  <group ns="tb3p">
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch"/>
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_lidar.launch"/>
+  </group>
+</launch>
