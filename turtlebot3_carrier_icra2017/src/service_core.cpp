@@ -44,29 +44,31 @@ void fnPublishVoiceFilePath(const char* file_path)
 
 void fnPublishGoalPoseTB3G()
 {
+  // start
   poseStamped[0].header.frame_id = "map";
   poseStamped[0].header.stamp = ros::Time::now();
-  poseStamped[0].pose.position.x = -0.629751861095;
-  poseStamped[0].pose.position.y = 0.014581086114;
+  poseStamped[0].pose.position.x = -0.162312030792;
+  poseStamped[0].pose.position.y = 1.78772580624;
   poseStamped[0].pose.position.z = 0.0;
 
-  poseStamped[0].pose.orientation.x = 0.0;
+  poseStamped[1].pose.orientation.x = 0.0;
   poseStamped[0].pose.orientation.y = 0.0;
-  poseStamped[0].pose.orientation.z = 0.08531826008;
-  poseStamped[0].pose.orientation.w = 0.996353749678;
+  poseStamped[0].pose.orientation.z = -0.785727710125;
+  poseStamped[0].pose.orientation.w = 0.618572522459;
 
 
   // counter
   poseStamped[1].header.frame_id = "map";
   poseStamped[1].header.stamp = ros::Time::now();
-  poseStamped[1].pose.position.x = -1.94660317898;
-  poseStamped[1].pose.position.y = -0.418711960316;
+  poseStamped[1].pose.position.x = 0.979266941547;
+  poseStamped[1].pose.position.y = 1.7585580349;
   poseStamped[1].pose.position.z = 0.0;
 
   poseStamped[1].pose.orientation.x = 0.0;
   poseStamped[1].pose.orientation.y = 0.0;
-  poseStamped[1].pose.orientation.z = 0.998491629827;
-  poseStamped[1].pose.orientation.w = -0.0549041452392;
+  poseStamped[1].pose.orientation.z = -0.178078902255;
+  poseStamped[1].pose.orientation.w = 0.984016211539;
+
 
 
   if (service_sequence[0] == 0)
@@ -181,7 +183,7 @@ int main(int argc, char **argv)
 
   pub_is_item_available = n.advertise<turtlebot3_carrier_icra2017::AvailableItemList>("/is_item_available", 100);
 
-  pub_play_sound = n.advertise<std_msgs::String>("/play_sound_file", 100);
+  pub_play_sound = n.advertise<std_msgs::String>("/tb3g/play_sound_file", 100);
 
   pub_poseStamped_tb3g = n.advertise<geometry_msgs::PoseStamped>("/tb3g/move_base_simple/goal", 1000);
   pub_poseStamped_tb3r = n.advertise<geometry_msgs::PoseStamped>("/tb3r/move_base_simple/goal", 1000);

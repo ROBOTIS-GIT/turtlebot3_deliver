@@ -1,4 +1,4 @@
-image: /home/leon/map.pgm
+image: /home/demo/map.pgm
 resolution: 0.025000
 origin: [-10.000000, -10.000000, 0.000000]
 negate: 0
