@@ -1,0 +1,7 @@
+<launch>
+  <group ns="tb3g">
+  <!-- turtlebot3_teleop_key already has its own built in velocity smoother -->
+  <node pkg="turtlebot3_teleop" type="turtlebot3_teleop_key" name="turtlebot3_teleop_keyboard"  output="screen">
+  </node>
+  </group>
+</launch>
