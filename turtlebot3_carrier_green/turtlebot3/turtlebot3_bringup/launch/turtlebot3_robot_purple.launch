@@ -1,6 +1,8 @@
 <launch>
   <group ns="tb3p">
-  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch"/>
-  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_lidar.launch"/>
+    <remap from="/tf" to="/tb3p/tf"/>
+    <remap from="/tf_static" to="/tb3p/tf_static"/>
+    <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch"/>
+    <include file="$(find turtlebot3_bringup)/launch/turtlebot3_lidar.launch"/>
   </group>
 </launch>
