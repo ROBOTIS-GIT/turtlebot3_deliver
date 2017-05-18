@@ -1,5 +1,8 @@
 <launch>
   <group ns="tb3g">
+
+  <remap from="/tf" to="/tb3g/tf"/>
+  <remap from="/tf_static" to="/tb3g/tf_static"/>
   <!-- Turtlebot3 -->
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch" />
 
