@@ -43,7 +43,7 @@ Moving around:
 
 w/x : increase/decrease linear velocity
 a/d : increase/decrease angular velocity
-space key, s : force stop
+space key or s: force stop
 
 CTRL-C to quit
 """
@@ -93,7 +93,7 @@ if __name__=="__main__":
                 target_angular_vel = target_angular_vel - 0.1
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
-            elif key == ' ' or key == 's' :
+            elif key == ' ' or key == 's':
                 target_linear_vel   = 0
                 control_linear_vel  = 0
                 target_angular_vel  = 0
