@@ -66,9 +66,9 @@ bool Turtlebot3MotorDriver::init(void)
   setTorque(left_wheel_id_, true);
   setTorque(right_wheel_id_, true);
 
-  // Set Dynamixel Profile Acceleration 
-  setProfileAcceleration(left_wheel_id_, 10);
-  setProfileAcceleration(right_wheel_id_, 10);
+  // Set Dynamixel Profile Acceleration
+  setProfileAcceleration(left_wheel_id_, 15);
+  setProfileAcceleration(right_wheel_id_, 15);
 
   groupSyncWriteVelocity_ = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, ADDR_X_GOAL_VELOCITY, LEN_X_GOAL_VELOCITY);
   groupSyncReadEncoder_   = new dynamixel::GroupSyncRead(portHandler_, packetHandler_, ADDR_X_PRESENT_POSITION, LEN_X_PRESENT_POSITION);
