@@ -1,0 +1,8 @@
+<launch>
+  <group ns="tb3p">
+    <remap from="/cmd_vel" to="/tb3p/cmd_vel"/>
+  <!-- turtlebot3_teleop_key already has its own built in velocity smoother -->
+  <node pkg="turtlebot3_teleop" type="turtlebot3_teleop_key" name="turtlebot3_teleop_keyboard"  output="screen">
+  </node>
+  </group>
+</launch>
