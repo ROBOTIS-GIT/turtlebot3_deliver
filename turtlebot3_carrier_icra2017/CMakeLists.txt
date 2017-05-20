@@ -4,6 +4,7 @@ project(turtlebot3_carrier_icra2017)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   turtlebot3_msgs
+  geometry_msgs
   genmsg
 )
 
@@ -14,9 +15,16 @@ add_message_files(DIRECTORY msg
   ServiceStatus.msg
 )
 
+add_service_files(DIRECTORY srv
+  FILES
+  InitTurtlebotPose.srv
+)
+
 generate_messages(
   DEPENDENCIES
+  geometry_msgs
 )
+
 
 catkin_package(
 # INCLUDE_DIRS include
@@ -34,3 +42,11 @@ add_dependencies(service_core turtlebot3_carrier_icra2017_generate_messages_cpp)
 add_executable(pad_virtual src/pad_virtual.cpp)
 target_link_libraries(pad_virtual ${catkin_LIBRARIES})
 add_dependencies(pad_virtual turtlebot3_carrier_icra2017_generate_messages_cpp)
+
+add_executable(pose_initialization src/pose_initialization.cpp)
+target_link_libraries(pose_initialization ${catkin_LIBRARIES})
+add_dependencies(pose_initialization turtlebot3_carrier_icra2017_generate_messages_cpp)
+
+add_executable(call_initial_pose src/call_initial_pose.cpp)
+target_link_libraries(call_initial_pose ${catkin_LIBRARIES})
+add_dependencies(call_initial_pose turtlebot3_carrier_icra2017_generate_messages_cpp)
