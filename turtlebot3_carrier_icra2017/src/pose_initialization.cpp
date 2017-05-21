@@ -36,42 +36,42 @@ public:
 
   void cbGatherParticle(const geometry_msgs::PoseArray& poseArray)
   {
-    // if (!is_pose_initialized)
-    //   return;
-    //
-    // int size = poseArray.poses.size();
-    //
-    // float score = 0.0;
-    //
-    // for (int i = 0; i < size; i++)
-    // {
-    //   for (int j = i + 1; j < size; j++)
-    //     score += sqrt((poseArray.poses[i].position.x - poseArray.poses[j].position.x) * (poseArray.poses[i].position.x - poseArray.poses[j].position.x) +
-    //                   (poseArray.poses[i].position.y - poseArray.poses[j].position.y) * (poseArray.poses[i].position.y - poseArray.poses[j].position.y));
-    // }
-    //
-    // if (score > MSE_IS_POSE_INITIALIZING_COMPLETED)
-    // {
-    //   geometry_msgs::Twist twist;
-    //   twist.angular.z = 0.8;
-    //
-    //   ROS_INFO("on pose initializing | MSE : %lf > %lf", score, MSE_IS_POSE_INITIALIZING_COMPLETED);
-    //
-    //   pub_twist.publish(twist);
-    // }
-    // else
-    // {
-    //   geometry_msgs::Twist twist;
-    //   twist.angular.z = 0.0;
-    //
-    //   ROS_INFO("pose initializing completed");
-    //
-    //   pub_twist.publish(twist);
-    //
-    //   fnTablePose();
-    //
-    //   exit(0);
-    // }
+    if (!is_pose_initialized)
+      return;
+
+    int size = poseArray.poses.size();
+
+    float score = 0.0;
+
+    for (int i = 0; i < size; i++)
+    {
+      for (int j = i + 1; j < size; j++)
+        score += sqrt((poseArray.poses[i].position.x - poseArray.poses[j].position.x) * (poseArray.poses[i].position.x - poseArray.poses[j].position.x) +
+                      (poseArray.poses[i].position.y - poseArray.poses[j].position.y) * (poseArray.poses[i].position.y - poseArray.poses[j].position.y));
+    }
+
+    if (score > MSE_IS_POSE_INITIALIZING_COMPLETED)
+    {
+      geometry_msgs::Twist twist;
+      twist.angular.z = 0.8;
+
+      ROS_INFO("on pose initializing | MSE : %lf > %lf", score, MSE_IS_POSE_INITIALIZING_COMPLETED);
+
+      pub_twist.publish(twist);
+    }
+    else
+    {
+      geometry_msgs::Twist twist;
+      twist.angular.z = 0.0;
+
+      ROS_INFO("pose initializing completed");
+
+      pub_twist.publish(twist);
+
+      fnTablePose();
+
+      exit(0);
+    }
   }
 
   bool fnSetInitialPose()
