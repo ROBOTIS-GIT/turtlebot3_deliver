@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   turtlebot3_msgs
   geometry_msgs
+  tf2_msgs
   genmsg
 )
 
