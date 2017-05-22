@@ -12,7 +12,7 @@ table_pose_tb3r:
 
 
 counter_pose_bread:
-  position: [3.60783815384, -0.750428497791, 0.0]
+  position: [-3.60783815384, -0.750428497791, 0.0]
   orientation: [0.0, 0.0, 0.999335763287, -0.0364421763375]
 
 counter_pose_drink:

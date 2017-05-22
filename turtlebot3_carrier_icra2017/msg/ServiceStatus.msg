@@ -1,3 +1,3 @@
-uint32 robot_number
-uint32 item_number
-uint32 service_status
+int32[3] item_num_chosen_by_pad
+bool[3] is_item_available
+int32[3] robot_service_sequence

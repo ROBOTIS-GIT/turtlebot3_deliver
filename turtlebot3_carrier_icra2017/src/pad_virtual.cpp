@@ -1,99 +1,148 @@
 #include "ros/ros.h"
 #include "turtlebot3_carrier_icra2017/PadOrder.h"
-#include "turtlebot3_carrier_icra2017/AvailableItemList.h"
+#include "turtlebot3_carrier_icra2017/ServiceStatus.h"
 
-ros::Publisher pub_pad_order;
+#define TURTLEBOT_NUM 1 // tb3g
 
-ros::Subscriber sub_available_item_list;
-
-bool is_item_available[3] = {true, true, true};
-
-void cbRefreshAvailableItemList(const turtlebot3_carrier_icra2017::AvailableItemList rcvAvailableItemList)
+class PadVirtual
 {
-  is_item_available[rcvAvailableItemList.item_number - 1] = rcvAvailableItemList.is_item_available;
-}
+public:
+  PadVirtual()
+  {
+    // fnInitParam();
+
+    pub_pad_order = nh_.advertise<turtlebot3_carrier_icra2017::PadOrder>("/tb3g/pad_order", 1);
+
+    subServiceStatus = nh_.subscribe("/tb3g/service_status", 1, &PadVirtual::cbCheckServiceStatus, this);
+
+    // sub_arrival_status = nh_.subscribe("/tb3g/move_base/result", 1, cbCheckArrivalStatusTB3G);
+
+    fnPubPadOrder();
+
+    // is_pose_initialized = fnSetInitialPose();
+  }
+
+  void cbCheckServiceStatus(const turtlebot3_carrier_icra2017::ServiceStatus rcvServiceStatus)
+  {
+    item_num_chosen_by_pad = rcvServiceStatus.item_num_chosen_by_pad;
+    is_item_available = rcvServiceStatus.is_item_available;
+    robot_service_sequence = rcvServiceStatus.robot_service_sequence;
+
+    // ROS_INFO("aa");
+
+    // ROS_INFO("%d %d %d", is_item_available[item_num_chosen_by_pad[TURTLEBOT_NUM]], robot_service_sequence[TURTLEBOT_NUM], item_num_chosen_by_pad[TURTLEBOT_NUM]);
+
+    // ROS_INFO("%d %x %d", item_num_chosen_by_pad[0], is_item_available[2], robot_service_sequence[0]);
+    // is_item_available[rcvServiceStatus.item_number - 1] = rcvServiceStatus.is_item_available;
+  }
+
+  void fnPubPadOrder()
+  {
+    ros::Rate loop_rate(1);
+
+    int selected_item_num = -1;
+
+    while (ros::ok())
+    {
+      turtlebot3_carrier_icra2017::PadOrder padOrder;
+
+      std::string inputString;
+      std::cout << "Which item would you choose? (0. Bread 1. Drink 2. Snack or q. Quit)" << '\n';
+      std::getline(std::cin, inputString);
+
+      if (inputString.compare("0") == 0)
+      {
+        selected_item_num = 0;
+        ROS_INFO("Bread was selected");
+      }
+      else if (inputString.compare("1") == 0)
+      {
+        selected_item_num = 1;
+        ROS_INFO("Juice was selected");
+      }
+      else if (inputString.compare("2") == 0)
+      {
+        selected_item_num = 2;
+        ROS_INFO("Snack was selected");
+      }
+      else if (inputString.compare("q") == 0)
+      {
+        return;
+      }
+      else
+      {
+        ROS_INFO("Sorry, selected item is now unavailable. Please choose another item");
+        continue;
+      }
+
+      // ROS_INFO("%d %d %d", is_item_available[selected_item_num], robot_service_sequence[TURTLEBOT_NUM], item_num_chosen_by_pad[TURTLEBOT_NUM]);
+
+      if (!is_item_available[selected_item_num])
+      {
+        ROS_INFO("but chosen item is currently unavailable");
+        continue;
+      }
+
+      if (robot_service_sequence[TURTLEBOT_NUM] != 0)
+      {
+        ROS_INFO("but your TurtleBot is currently on servicing");
+        continue;
+      }
+
+      if (item_num_chosen_by_pad[TURTLEBOT_NUM] != -1)
+      {
+        ROS_INFO("but your TurtleBot is currently on servicing");
+        continue;
+      }
+
+      padOrder.pad_number = TURTLEBOT_NUM;
+      padOrder.item_number = selected_item_num;
+
+      pub_pad_order.publish(padOrder);
+
+      ros::spinOnce();
+      loop_rate.sleep();
+    }
+  }
+
+private:
+
+  // enum ROBOT_NUMBER
+  // {
+  //   TB3P = 0
+  //   , TB3G
+  //   , TB3R
+  // } robot_number;
+  //
+  // enum ITEM_NUMBER
+  // {
+  //   TB3P = 0
+  //   , TB3G
+  //   , TB3R
+  // } item_number;
+
+  ros::NodeHandle nh_;
+
+  // Publisher
+  ros::Publisher pub_pad_order;
+
+  // Subscriber
+  ros::Subscriber subServiceStatus;
+
+  boost::array<int, 3> item_num_chosen_by_pad = { {-1, -1, -1} };
+  boost::array<bool, 3> is_item_available = { {true, true, true} };
+  boost::array<int, 3> robot_service_sequence = { {0, 0, 0} };
+};
 
 int main(int argc, char **argv)
 {
+  //Initiate ROS
   ros::init(argc, argv, "pad_virtual");
 
-  ros::NodeHandle n;
+  //Create PadVirtual class
+  PadVirtual padVirtual;
 
-  pub_pad_order = n.advertise<turtlebot3_carrier_icra2017::PadOrder>("/tb3g/pad_order", 100);
-
-  sub_available_item_list = n.subscribe("/is_item_available", 100, cbRefreshAvailableItemList);
-
-  ros::Rate loop_rate(10);
-
-  while (ros::ok())
-  {
-    std::string inputString;
-    std::cout << "Which item do you choose? (a. Juice b. Snack c. Bread)" << '\n';
-    std::getline(std::cin, inputString);
-
-    if (inputString.compare("a") == 0)
-    {
-      if (is_item_available[0])
-      {
-        turtlebot3_carrier_icra2017::PadOrder padOrder;
-
-        padOrder.pad_number = 1;
-        padOrder.item_number = 1;
-
-        pub_pad_order.publish(padOrder);
-
-        ROS_INFO("Juice was selected");
-      }
-      else
-      {
-        ROS_INFO("Sorry, selected item is now unavailable. Please choose another item");
-      }
-    }
-    else if (inputString.compare("b") == 0)
-    {
-      if (is_item_available[1])
-      {
-        turtlebot3_carrier_icra2017::PadOrder padOrder;
-
-        padOrder.pad_number = 1;
-        padOrder.item_number = 2;
-
-        pub_pad_order.publish(padOrder);
-
-        ROS_INFO("Snack was selected");
-      }
-      else
-      {
-        ROS_INFO("Sorry, selected item is now unavailable. Please choose another item");
-      }
-    }
-    else if (inputString.compare("c") == 0)
-    {
-      if (is_item_available[2])
-      {
-        turtlebot3_carrier_icra2017::PadOrder padOrder;
-
-        padOrder.pad_number = 1;
-        padOrder.item_number = 3;
-
-        pub_pad_order.publish(padOrder);
-
-        ROS_INFO("Bread was selected");
-      }
-      else
-      {
-        ROS_INFO("Sorry, selected item is now unavailable. Please choose another item");
-      }
-    }
-    else
-    {
-      break;
-    }
-
-    ros::spinOnce();
-
-    loop_rate.sleep();
-  }
+  ros::spin();
 
   return 0;
 }

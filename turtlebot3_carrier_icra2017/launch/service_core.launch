@@ -1,0 +1,6 @@
+<launch>
+  <rosparam file="$(find turtlebot3_carrier_icra2017)/param/target_pose.yaml" command="load" />
+
+  <!-- service_core -->
+  <node pkg="turtlebot3_carrier_icra2017" type="service_core" name="service_core" output="screen" />
+</launch>
