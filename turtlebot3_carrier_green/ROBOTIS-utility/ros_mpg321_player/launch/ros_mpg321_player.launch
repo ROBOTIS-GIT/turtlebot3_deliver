@@ -1,5 +1,3 @@
 <launch>
-  <group ns="tb3g">
-    <node pkg="ros_mpg321_player" type="ros_mpg321_player" name="ros_mpg321_player" output="screen"/>
-  </group>
+  <node pkg="ros_mpg321_player" type="ros_mpg321_player" name="ros_mpg321_player" output="screen"/>
 </launch>

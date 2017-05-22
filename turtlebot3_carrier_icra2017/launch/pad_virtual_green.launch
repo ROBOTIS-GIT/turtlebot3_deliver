@@ -1,0 +1,6 @@
+<launch>
+  <group ns="tb3g">
+    <!-- pad_virtual -->
+    <node pkg="turtlebot3_carrier_icra2017" type="pad_virtual" name="pad_virtual" output="screen" />
+  </group>
+</launch>

@@ -11,9 +11,9 @@ public:
   {
     // fnInitParam();
 
-    pub_pad_order = nh_.advertise<turtlebot3_carrier_icra2017::PadOrder>("/tb3g/pad_order", 1);
+    pub_pad_order = nh_.advertise<turtlebot3_carrier_icra2017::PadOrder>("pad_order", 1);
 
-    subServiceStatus = nh_.subscribe("/tb3g/service_status", 1, &PadVirtual::cbCheckServiceStatus, this);
+    subServiceStatus = nh_.subscribe("service_status", 1, &PadVirtual::cbCheckServiceStatus, this);
 
     // sub_arrival_status = nh_.subscribe("/tb3g/move_base/result", 1, cbCheckArrivalStatusTB3G);
 

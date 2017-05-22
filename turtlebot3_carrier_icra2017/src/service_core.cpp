@@ -240,7 +240,7 @@ public:
   {
     if (rcvMoveBaseActionResult.status.status == 3)
     {
-      is_robot_reached_target[0] = true;
+      is_robot_reached_target[ROBOT_NUMBER_TB3P] = true;
       // if (robot_service_sequence[1] == 1)
       // fnPublishGoalPoseTB3G();
       //
@@ -262,7 +262,7 @@ public:
   {
     if (rcvMoveBaseActionResult.status.status == 3)
     {
-      is_robot_reached_target[1] = true;
+      is_robot_reached_target[ROBOT_NUMBER_TB3G] = true;
       // if (robot_service_sequence[1] == 1)
       // fnPublishGoalPoseTB3G();
       //
@@ -284,7 +284,7 @@ public:
   {
     if (rcvMoveBaseActionResult.status.status == 3)
     {
-      is_robot_reached_target[2] = true;
+      is_robot_reached_target[ROBOT_NUMBER_TB3R] = true;
       // if (robot_service_sequence[1] == 1)
       // fnPublishGoalPoseTB3G();
       //
