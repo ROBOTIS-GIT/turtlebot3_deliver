@@ -475,7 +475,7 @@ public:
         else if (robot_service_sequence[ROBOT_NUMBER_TB3R] == 2)
         {
           // go to counter
-          pubPoseStampedTb3g.publish(poseStampedCounter[item_num_chosen_by_pad[ROBOT_NUMBER_TB3R]]);
+          pubPoseStampedTb3r.publish(poseStampedCounter[item_num_chosen_by_pad[ROBOT_NUMBER_TB3R]]);
 
           is_robot_reached_target[ROBOT_NUMBER_TB3R] = false;
 
@@ -495,7 +495,7 @@ public:
         else if (robot_service_sequence[ROBOT_NUMBER_TB3R] == 4)
         {
           // return to table
-          pubPoseStampedTb3g.publish(poseStampedTable[ROBOT_NUMBER_TB3R]);
+          pubPoseStampedTb3r.publish(poseStampedTable[ROBOT_NUMBER_TB3R]);
 
           is_robot_reached_target[ROBOT_NUMBER_TB3R] = false;
 
