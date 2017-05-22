@@ -2,14 +2,14 @@
 #include "turtlebot3_carrier_icra2017/PadOrder.h"
 #include "turtlebot3_carrier_icra2017/ServiceStatus.h"
 
-#define TURTLEBOT_NUM 1 // tb3g
-
 class PadVirtual
 {
 public:
   PadVirtual()
   {
     // fnInitParam();
+
+    ros::param::get("~robot_num", robot_num);
 
     pub_pad_order = nh_.advertise<turtlebot3_carrier_icra2017::PadOrder>("pad_order", 1);
 
@@ -30,7 +30,7 @@ public:
 
     // ROS_INFO("aa");
 
-    // ROS_INFO("%d %d %d", is_item_available[item_num_chosen_by_pad[TURTLEBOT_NUM]], robot_service_sequence[TURTLEBOT_NUM], item_num_chosen_by_pad[TURTLEBOT_NUM]);
+    // ROS_INFO("%d %d %d", is_item_available[item_num_chosen_by_pad[robot_num]], robot_service_sequence[robot_num], item_num_chosen_by_pad[robot_num]);
 
     // ROS_INFO("%d %x %d", item_num_chosen_by_pad[0], is_item_available[2], robot_service_sequence[0]);
     // is_item_available[rcvServiceStatus.item_number - 1] = rcvServiceStatus.is_item_available;
@@ -72,33 +72,35 @@ public:
       else
       {
         ROS_INFO("Sorry, selected item is now unavailable. Please choose another item");
-        continue;
+        goto spin;
       }
 
-      // ROS_INFO("%d %d %d", is_item_available[selected_item_num], robot_service_sequence[TURTLEBOT_NUM], item_num_chosen_by_pad[TURTLEBOT_NUM]);
+
 
       if (!is_item_available[selected_item_num])
       {
         ROS_INFO("but chosen item is currently unavailable");
-        continue;
+        goto spin;
       }
 
-      if (robot_service_sequence[TURTLEBOT_NUM] != 0)
+      if (robot_service_sequence[robot_num] != 0)
       {
         ROS_INFO("but your TurtleBot is currently on servicing");
-        continue;
+        goto spin;
       }
 
-      if (item_num_chosen_by_pad[TURTLEBOT_NUM] != -1)
+      if (item_num_chosen_by_pad[robot_num] != -1)
       {
         ROS_INFO("but your TurtleBot is currently on servicing");
-        continue;
+        goto spin;
       }
 
-      padOrder.pad_number = TURTLEBOT_NUM;
+      padOrder.pad_number = robot_num;
       padOrder.item_number = selected_item_num;
 
       pub_pad_order.publish(padOrder);
+
+      spin:
 
       ros::spinOnce();
       loop_rate.sleep();
@@ -132,6 +134,8 @@ private:
   boost::array<int, 3> item_num_chosen_by_pad = { {-1, -1, -1} };
   boost::array<bool, 3> is_item_available = { {true, true, true} };
   boost::array<int, 3> robot_service_sequence = { {0, 0, 0} };
+
+  int robot_num;
 };
 
 int main(int argc, char **argv)

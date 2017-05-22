@@ -34,7 +34,9 @@ public:
 
     pub_is_item_available = nh_.advertise<turtlebot3_carrier_icra2017::AvailableItemList>("/is_item_available", 1);
 
-    pub_play_sound = nh_.advertise<std_msgs::String>("/tb3g/play_sound_file", 1);
+    pub_play_sound_tb3p = nh_.advertise<std_msgs::String>("/tb3p/play_sound_file", 1);
+    pub_play_sound_tb3g = nh_.advertise<std_msgs::String>("/tb3g/play_sound_file", 1);
+    pub_play_sound_tb3r = nh_.advertise<std_msgs::String>("/tb3r/play_sound_file", 1);
 
     pubPoseStampedTb3p = nh_.advertise<geometry_msgs::PoseStamped>("/tb3p/move_base_simple/goal", 1);
     pubPoseStampedTb3g = nh_.advertise<geometry_msgs::PoseStamped>("/tb3g/move_base_simple/goal", 1);
@@ -160,13 +162,26 @@ public:
   }
 
 
-  void fnPublishVoiceFilePath(const char* file_path)
+  void fnPublishVoiceFilePath(int robot_num, const char* file_path)
   {
     std_msgs::String str;
 
     str.data = file_path;
 
-    pub_play_sound.publish(str);
+    if (robot_num == ROBOT_NUMBER_TB3P)
+    {
+      pub_play_sound_tb3p.publish(str);
+    }
+    else if (robot_num == ROBOT_NUMBER_TB3G)
+    {
+      pub_play_sound_tb3g.publish(str);
+    }
+    else if (robot_num == ROBOT_NUMBER_TB3R)
+    {
+      pub_play_sound_tb3r.publish(str);
+    }
+
+    ROS_INFO("%d", robot_num);
   }
   //
   // void fnPublishGoalPoseTB3G()
@@ -206,7 +221,7 @@ public:
   //
   //     service_sequence[0] = 1;
   //
-  //     fnPublishVoiceFilePath("/home/turtlebot/Desktop/voice/boy1-2.mp3");
+  //     fnPublishVoiceFilePath("/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-2.mp3");
   //   }
   //   else if (service_sequence[0] == 1)
   //   {
@@ -227,11 +242,11 @@ public:
   //
   //     service_sequence[0] = 2;
   //
-  //     fnPublishVoiceFilePath("/home/turtlebot/Desktop/voice/boy1-3.mp3");
+  //     fnPublishVoiceFilePath("/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-3.mp3");
   //   }
   //   else if (service_sequence[0] == 2)
   //   {
-  //     fnPublishVoiceFilePath("/home/turtlebot/Desktop/voice/boy1-4.mp3");
+  //     fnPublishVoiceFilePath("/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-4.mp3");
   //   }
   // }
   //
@@ -310,20 +325,85 @@ public:
     // {
       // ROS_INFO("isrunning1");
 
+      if (is_robot_reached_target[ROBOT_NUMBER_TB3P])
+      {
+        if (robot_service_sequence[ROBOT_NUMBER_TB3P] == 1)
+        {
+          ROS_INFO("start_voice");
+
+          // fnPublishVoiceFilePath(ROBOT_NUMBER_TB3P, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/girl1-1.mp3");
+
+          // ros::Duration(5.0).sleep();
+
+          fnPublishVoiceFilePath(ROBOT_NUMBER_TB3P, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/girl1-2.mp3");
+
+          // waiting for loading
+          // ros::Duration(5.0).sleep();
+
+          robot_service_sequence[ROBOT_NUMBER_TB3P] = 2;
+        }
+        else if (robot_service_sequence[ROBOT_NUMBER_TB3P] == 2)
+        {
+          // go to counter
+          pubPoseStampedTb3p.publish(poseStampedCounter[item_num_chosen_by_pad[ROBOT_NUMBER_TB3P]]);
+
+          is_robot_reached_target[ROBOT_NUMBER_TB3P] = false;
+
+          robot_service_sequence[ROBOT_NUMBER_TB3P] = 3;
+        }
+        else if (robot_service_sequence[ROBOT_NUMBER_TB3P] == 3)
+        {
+          ROS_INFO("middle_voice");
+
+          fnPublishVoiceFilePath(ROBOT_NUMBER_TB3P, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/girl1-3.mp3");
+
+          // waiting for loading
+          // ros::Duration(10.0).sleep();
+
+          robot_service_sequence[ROBOT_NUMBER_TB3P] = 4;
+        }
+        else if (robot_service_sequence[ROBOT_NUMBER_TB3P] == 4)
+        {
+          // return to table
+          pubPoseStampedTb3p.publish(poseStampedTable[ROBOT_NUMBER_TB3P]);
+
+          is_robot_reached_target[ROBOT_NUMBER_TB3P] = false;
+
+          robot_service_sequence[ROBOT_NUMBER_TB3P] = 5;
+        }
+        else if (robot_service_sequence[ROBOT_NUMBER_TB3P] == 5)
+        {
+          ROS_INFO("finish_voice");
+
+          fnPublishVoiceFilePath(ROBOT_NUMBER_TB3P, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/girl1-4.mp3");
+
+          // waiting for loading
+          // ros::Duration(5.0).sleep();
+
+          robot_service_sequence[ROBOT_NUMBER_TB3P] = 0;
+
+          is_item_available[item_num_chosen_by_pad[ROBOT_NUMBER_TB3P]] = true;
+
+          item_num_chosen_by_pad[ROBOT_NUMBER_TB3P] = -1;
+
+          ROS_INFO("ended");
+        }
+      }
+
       if (is_robot_reached_target[ROBOT_NUMBER_TB3G])
       {
         if (robot_service_sequence[ROBOT_NUMBER_TB3G] == 1)
         {
           ROS_INFO("start_voice");
 
-          fnPublishVoiceFilePath("/home/turtlebot/Desktop/voice/boy1-1.mp3");
+          // fnPublishVoiceFilePath(ROBOT_NUMBER_TB3G, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-1.mp3");
 
-          ros::Duration(5.0).sleep();
+          // ros::Duration(5.0).sleep();
 
-          fnPublishVoiceFilePath("/home/turtlebot/Desktop/voice/boy1-2.mp3");
+          fnPublishVoiceFilePath(ROBOT_NUMBER_TB3G, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-2.mp3");
 
           // waiting for loading
-          ros::Duration(5.0).sleep();
+          // ros::Duration(5.0).sleep();
 
           robot_service_sequence[ROBOT_NUMBER_TB3G] = 2;
         }
@@ -340,10 +420,10 @@ public:
         {
           ROS_INFO("middle_voice");
 
-          fnPublishVoiceFilePath("/home/turtlebot/Desktop/voice/boy1-3.mp3");
+          fnPublishVoiceFilePath(ROBOT_NUMBER_TB3G, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-3.mp3");
 
           // waiting for loading
-          ros::Duration(10.0).sleep();
+          // ros::Duration(10.0).sleep();
 
           robot_service_sequence[ROBOT_NUMBER_TB3G] = 4;
         }
@@ -360,16 +440,81 @@ public:
         {
           ROS_INFO("finish_voice");
 
-          fnPublishVoiceFilePath("/home/turtlebot/Desktop/voice/boy1-4.mp3");
+          fnPublishVoiceFilePath(ROBOT_NUMBER_TB3G, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-4.mp3");
 
           // waiting for loading
-          ros::Duration(5.0).sleep();
+          // ros::Duration(5.0).sleep();
 
           robot_service_sequence[ROBOT_NUMBER_TB3G] = 0;
 
           is_item_available[item_num_chosen_by_pad[ROBOT_NUMBER_TB3G]] = true;
 
           item_num_chosen_by_pad[ROBOT_NUMBER_TB3G] = -1;
+
+          ROS_INFO("ended");
+        }
+      }
+
+      if (is_robot_reached_target[ROBOT_NUMBER_TB3R])
+      {
+        if (robot_service_sequence[ROBOT_NUMBER_TB3R] == 1)
+        {
+          ROS_INFO("start_voice");
+
+          // fnPublishVoiceFilePath(ROBOT_NUMBER_TB3R, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-1.mp3");
+
+          // ros::Duration(5.0).sleep();
+
+          fnPublishVoiceFilePath(ROBOT_NUMBER_TB3R, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-2.mp3");
+
+          // waiting for loading
+          // ros::Duration(5.0).sleep();
+
+          robot_service_sequence[ROBOT_NUMBER_TB3R] = 2;
+        }
+        else if (robot_service_sequence[ROBOT_NUMBER_TB3R] == 2)
+        {
+          // go to counter
+          pubPoseStampedTb3g.publish(poseStampedCounter[item_num_chosen_by_pad[ROBOT_NUMBER_TB3R]]);
+
+          is_robot_reached_target[ROBOT_NUMBER_TB3R] = false;
+
+          robot_service_sequence[ROBOT_NUMBER_TB3R] = 3;
+        }
+        else if (robot_service_sequence[ROBOT_NUMBER_TB3R] == 3)
+        {
+          ROS_INFO("middle_voice");
+
+          fnPublishVoiceFilePath(ROBOT_NUMBER_TB3R, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-3.mp3");
+
+          // waiting for loading
+          // ros::Duration(10.0).sleep();
+
+          robot_service_sequence[ROBOT_NUMBER_TB3R] = 4;
+        }
+        else if (robot_service_sequence[ROBOT_NUMBER_TB3R] == 4)
+        {
+          // return to table
+          pubPoseStampedTb3g.publish(poseStampedTable[ROBOT_NUMBER_TB3R]);
+
+          is_robot_reached_target[ROBOT_NUMBER_TB3R] = false;
+
+          robot_service_sequence[ROBOT_NUMBER_TB3R] = 5;
+        }
+        else if (robot_service_sequence[ROBOT_NUMBER_TB3R] == 5)
+        {
+          ROS_INFO("finish_voice");
+
+          fnPublishVoiceFilePath(ROBOT_NUMBER_TB3R, "/home/turtlebot/catkin_ws/src/turtlebot3_carrier_icra2017/turtlebot3_voice_icra2017/boy1-4.mp3");
+
+          // waiting for loading
+          // ros::Duration(5.0).sleep();
+
+          robot_service_sequence[ROBOT_NUMBER_TB3R] = 0;
+
+          is_item_available[item_num_chosen_by_pad[ROBOT_NUMBER_TB3R]] = true;
+
+          item_num_chosen_by_pad[ROBOT_NUMBER_TB3R] = -1;
 
           ROS_INFO("ended");
         }
@@ -509,7 +654,9 @@ private:
   ros::Publisher pubServiceStatusPadtb3r;
   ros::Publisher pub_is_item_available;
 
-  ros::Publisher pub_play_sound;
+  ros::Publisher pub_play_sound_tb3p;
+  ros::Publisher pub_play_sound_tb3g;
+  ros::Publisher pub_play_sound_tb3r;
 
   ros::Publisher pubPoseStampedTb3p;
   ros::Publisher pubPoseStampedTb3g;
