@@ -7,6 +7,11 @@
 #include "move_base_msgs/MoveBaseActionResult.h"
 #include "geometry_msgs/PoseStamped.h"
 
+#include <string.h>
+#include <sstream>
+// #include <iostream>
+// #include <sstream>
+
 #define ROBOT_NUMBER_TB3P 0
 #define ROBOT_NUMBER_TB3G 1
 #define ROBOT_NUMBER_TB3R 2
@@ -28,9 +33,9 @@ public:
 
 
 
-    pubServiceStatusPadtb3p = nh_.advertise<turtlebot3_carrier_icra2017::ServiceStatus>("/tb3p/service_status", 1);
-    pubServiceStatusPadtb3g = nh_.advertise<turtlebot3_carrier_icra2017::ServiceStatus>("/tb3g/service_status", 1);
-    pubServiceStatusPadtb3r = nh_.advertise<turtlebot3_carrier_icra2017::ServiceStatus>("/tb3r/service_status", 1);
+    pubServiceStatusPadtb3p = nh_.advertise<std_msgs::String>("/tb3p/service_status", 1);
+    pubServiceStatusPadtb3g = nh_.advertise<std_msgs::String>("/tb3g/service_status", 1);
+    pubServiceStatusPadtb3r = nh_.advertise<std_msgs::String>("/tb3r/service_status", 1);
 
     pub_is_item_available = nh_.advertise<turtlebot3_carrier_icra2017::AvailableItemList>("/is_item_available", 1);
 
@@ -41,6 +46,10 @@ public:
     pubPoseStampedTb3p = nh_.advertise<geometry_msgs::PoseStamped>("/tb3p/move_base_simple/goal", 1);
     pubPoseStampedTb3g = nh_.advertise<geometry_msgs::PoseStamped>("/tb3g/move_base_simple/goal", 1);
     pubPoseStampedTb3r = nh_.advertise<geometry_msgs::PoseStamped>("/tb3r/move_base_simple/goal", 1);
+
+    // sub_pad_order_tb3p = nh_.subscribe("/tb3p/pad_order", 1, &ServiceCore::cbReceivePadOrder, this);
+    // sub_pad_order_tb3g = nh_.subscribe("/tb3g/pad_order", 1, &ServiceCore::cbReceivePadOrder, this);
+    // sub_pad_order_tb3r = nh_.subscribe("/tb3r/pad_order", 1, &ServiceCore::cbReceivePadOrder, this);
 
     sub_pad_order_tb3p = nh_.subscribe("/tb3p/pad_order", 1, &ServiceCore::cbReceivePadOrder, this);
     sub_pad_order_tb3g = nh_.subscribe("/tb3g/pad_order", 1, &ServiceCore::cbReceivePadOrder, this);
@@ -181,7 +190,7 @@ public:
       pub_play_sound_tb3r.publish(str);
     }
 
-    ROS_INFO("%d", robot_num);
+    // ROS_INFO("%d", robot_num);
   }
   //
   // void fnPublishGoalPoseTB3G()
@@ -382,7 +391,7 @@ public:
 
           robot_service_sequence[ROBOT_NUMBER_TB3P] = 0;
 
-          is_item_available[item_num_chosen_by_pad[ROBOT_NUMBER_TB3P]] = true;
+          is_item_available[item_num_chosen_by_pad[ROBOT_NUMBER_TB3P]] = 1;
 
           item_num_chosen_by_pad[ROBOT_NUMBER_TB3P] = -1;
 
@@ -447,7 +456,7 @@ public:
 
           robot_service_sequence[ROBOT_NUMBER_TB3G] = 0;
 
-          is_item_available[item_num_chosen_by_pad[ROBOT_NUMBER_TB3G]] = true;
+          is_item_available[item_num_chosen_by_pad[ROBOT_NUMBER_TB3G]] = 1;
 
           item_num_chosen_by_pad[ROBOT_NUMBER_TB3G] = -1;
 
@@ -512,7 +521,7 @@ public:
 
           robot_service_sequence[ROBOT_NUMBER_TB3R] = 0;
 
-          is_item_available[item_num_chosen_by_pad[ROBOT_NUMBER_TB3R]] = true;
+          is_item_available[item_num_chosen_by_pad[ROBOT_NUMBER_TB3R]] = 1;
 
           item_num_chosen_by_pad[ROBOT_NUMBER_TB3R] = -1;
 
@@ -539,31 +548,78 @@ public:
     // }
   }
 
-  void cbReceivePadOrder(const turtlebot3_carrier_icra2017::PadOrder padOrder)
+  void cbReceivePadOrder(const std_msgs::String padOrder)
   {
-    if (!is_item_available[padOrder.item_number])
+    std::string str = padOrder.data;
+    std::string delimiter = ",";
+
+    size_t pos = 0;
+
+    int num = 0;
+    int input_numbers[2] = {-2, -2};
+    // std::string token;
+    while ((pos = str.find(delimiter)) != std::string::npos)
+    {
+        input_numbers[num] = atoi(str.substr(0, pos).c_str());
+        // std::cout << token << std::endl;
+        str.erase(0, pos + delimiter.length());
+
+        num++;
+    }
+
+    input_numbers[num] = atoi(str.substr(0, str.size()).c_str());
+
+    int pad_number = input_numbers[0];
+    int item_number = input_numbers[1];
+
+    // ROS_INFO("%d %d", input_numbers[0], input_numbers[1]);
+    // std::cout << s << std::endl;
+
+    // ROS_INFO("%s", padOrder.data.c_str());
+    //
+    // std::string split_by = ",";
+    // int item_number = atoi(padOrder.data.substr(0, padOrder.data.find(",")).c_str());
+    // int token2 = atoi(padOrder.data.substr(padOrder.data.find(","), padOrder.data.find(",")).c_str());
+    //
+    // ROS_INFO("%d %d", token1, token2);
+
+    // int inputs[2] = {-1, -1};
+    // int num = 0;
+    // while (std::getline(padOrder.data, token, ','))
+    // {
+    //   inputs[num] = atoi(token.c_str());
+    //   num++;
+    // }
+    //
+    // ROS_INFO("%d %d", inputs[0], inputs[1]);
+
+
+
+    if (is_item_available[item_number] != 1)
     {
       ROS_INFO("Chosen item is currently unavailable");
       return;
     }
 
-    if (robot_service_sequence[padOrder.pad_number] != 0)
+    if (robot_service_sequence[pad_number] != 0)
     {
       ROS_INFO("Your TurtleBot is currently on servicing");
       return;
     }
 
-    if (item_num_chosen_by_pad[padOrder.pad_number] != -1)
+    if (item_num_chosen_by_pad[pad_number] != -1)
     {
       ROS_INFO("Your TurtleBot is currently on servicing");
       return;
     }
 
-    item_num_chosen_by_pad[padOrder.pad_number] = padOrder.item_number;
+    item_num_chosen_by_pad[pad_number] = item_number;
 
-    robot_service_sequence[padOrder.pad_number] = 1; // just left from the table
+    robot_service_sequence[pad_number] = 1; // just left from the table
 
-    is_item_available[padOrder.item_number] = false;
+    is_item_available[item_number] = 0;
+
+    // ROS_INFO("%d %d %d", item_num_chosen_by_pad[pad_number], robot_service_sequence[pad_number], is_item_available[item_number]);
   }
 
 
@@ -613,15 +669,48 @@ public:
     // {
       // ROS_INFO("isrunning2");
 
-      turtlebot3_carrier_icra2017::ServiceStatus serviceStatus;
+      // turtlebot3_carrier_icra2017::ServiceStatus serviceStatus;
+      //
+      // serviceStatus.item_num_chosen_by_pad = item_num_chosen_by_pad;
+      // serviceStatus.is_item_available = is_item_available;
+      // serviceStatus.robot_service_sequence = robot_service_sequence;
+      //
+      // pubServiceStatusPadtb3p.publish(serviceStatus);
+      // pubServiceStatusPadtb3g.publish(serviceStatus);
+      // pubServiceStatusPadtb3r.publish(serviceStatus);
 
-      serviceStatus.item_num_chosen_by_pad = item_num_chosen_by_pad;
-      serviceStatus.is_item_available = is_item_available;
-      serviceStatus.robot_service_sequence = robot_service_sequence;
+      std::string str;
+      std_msgs::String serviceStatus;
+      std::ostringstream oss;
 
+      oss << item_num_chosen_by_pad[0] << "," << item_num_chosen_by_pad[1] << "," << item_num_chosen_by_pad[2] << ",";
+      oss << is_item_available[0] << "," << is_item_available[1] << "," << is_item_available[2] << ",";
+      oss << robot_service_sequence[0] << "," << robot_service_sequence[1] << "," << robot_service_sequence[2];
+
+      str = oss.str();
+      serviceStatus.data = str;
       pubServiceStatusPadtb3p.publish(serviceStatus);
       pubServiceStatusPadtb3g.publish(serviceStatus);
       pubServiceStatusPadtb3r.publish(serviceStatus);
+
+      //
+      // ROS_INFO("%s", oss.str().c_str());
+
+      // str += is_item_available[0] + "," + is_item_available[1] + "," + is_item_available[2] + ",";
+      // str += robot_service_sequence[0] + "," + robot_service_sequence[1] + "," + robot_service_sequence[2];
+
+      // serviceStatus.data = str;
+      //
+      // ROS_INFO("%d %d %d",item_num_chosen_by_pad[0] ,item_num_chosen_by_pad[1] ,item_num_chosen_by_pad[2] );
+      // ROS_INFO("%d %d %d",is_item_available[0] ,is_item_available[1] ,is_item_available[2] );
+      // ROS_INFO("%d %d %d",robot_service_sequence[0] ,robot_service_sequence[1] ,robot_service_sequence[2] );
+      // ROS_INFO(" ");
+      //
+      // ROS_INFO("%s", serviceStatus.data.c_str());
+      //
+      // pubServiceStatusPadtb3p.publish(serviceStatus);
+      // pubServiceStatusPadtb3g.publish(serviceStatus);
+      // pubServiceStatusPadtb3r.publish(serviceStatus);
 
       // ROS_INFO("hello");
 
@@ -679,7 +768,7 @@ private:
   std::vector<double> target_pose_orientation;
 
   boost::array<int, 3> item_num_chosen_by_pad = { {-1, -1, -1} };
-  boost::array<bool, 3> is_item_available = { {true, true, true} };
+  boost::array<int, 3> is_item_available = { {1, 1, 1} };
   boost::array<int, 3> robot_service_sequence = { {0, 0, 0} };
 
   bool is_robot_reached_target[3] = {true, true, true};
