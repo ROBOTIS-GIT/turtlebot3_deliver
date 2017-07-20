@@ -1,0 +1,10 @@
+<launch>
+  <group ns="tb3p">
+    <remap from="/tf" to="/tb3p/tf"/>
+    <remap from="/tf_static" to="/tb3p/tf_static"/>
+    <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch"/>
+    <include file="$(find turtlebot3_bringup)/launch/turtlebot3_lidar.launch"/>
+
+    <node pkg="ros_mpg321_player" type="ros_mpg321_player" name="ros_mpg321_player" output="screen"/>
+  </group>
+</launch>

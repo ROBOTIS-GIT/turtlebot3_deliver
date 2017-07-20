@@ -1,0 +1,7 @@
+<launch>
+  <group ns="tb3g">
+    <remap from="/tf" to="/tb3g/tf"/>
+    <remap from="/tf_static" to="/tb3g/tf_static"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot3_navigation)/rviz/turtlebot3_nav_green.rviz" required="true" />
+  </group>
+</launch>
