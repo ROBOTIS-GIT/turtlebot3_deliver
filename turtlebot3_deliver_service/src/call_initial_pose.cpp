@@ -1,13 +1,13 @@
 #include "ros/ros.h"
-// #include "turtlebot3_carrier_icra2017/PadOrder.h"
-// #include "turtlebot3_carrier_icra2017/AvailableItemList.h"
-// #include "turtlebot3_carrier_icra2017/ServiceStatus.h"
+// #include "turtlebot3_deliver_service/PadOrder.h"
+// #include "turtlebot3_deliver_service/AvailableItemList.h"
+// #include "turtlebot3_deliver_service/ServiceStatus.h"
 // #include "std_msgs/String.h"
 // #include "actionlib_msgs/GoalStatusArray.h"
 // #include "move_base_msgs/MoveBaseActionResult.h"
 // #include "geometry_msgs/PoseStamped.h"
 // #include "geometry_msgs/PoseWithCovarianceStamped.h"
-#include "turtlebot3_carrier_icra2017/InitTurtlebotPose.h"
+#include "turtlebot3_deliver_service/InitTurtlebotPose.h"
 
 /*
 header:
@@ -35,7 +35,7 @@ pose:
 
 ros::ServiceClient client_initial_pose;
 
-turtlebot3_carrier_icra2017::InitTurtlebotPose initTurtlebotPose;
+turtlebot3_deliver_service::InitTurtlebotPose initTurtlebotPose;
 
 // geometry_msgs::PoseWithCovarianceStamped poseWithCovarianceStamped;
 
@@ -121,7 +121,7 @@ turtlebot3_carrier_icra2017::InitTurtlebotPose initTurtlebotPose;
 //
 //     pub_poseStamped_tb3g.publish(poseStamped[0]);
 //
-//     turtlebot3_carrier_icra2017::AvailableItemList availableItemList;
+//     turtlebot3_deliver_service::AvailableItemList availableItemList;
 //
 //     is_item_available[chosen_item_num[0] - 1] = true;
 //
@@ -154,7 +154,7 @@ turtlebot3_carrier_icra2017::InitTurtlebotPose initTurtlebotPose;
 //   }
 // }
 //
-// void cbControlServiceStatus(const turtlebot3_carrier_icra2017::PadOrder rcvPadOrder)
+// void cbControlServiceStatus(const turtlebot3_deliver_service::PadOrder rcvPadOrder)
 // {
 //   if (chosen_item_num[rcvPadOrder.pad_number - 1] != 0)
 //   {
@@ -179,7 +179,7 @@ turtlebot3_carrier_icra2017::InitTurtlebotPose initTurtlebotPose;
 //
 //   fnPublishGoalPoseTB3G();
 //
-//   turtlebot3_carrier_icra2017::AvailableItemList availableItemList;
+//   turtlebot3_deliver_service::AvailableItemList availableItemList;
 //
 //   is_item_available[chosen_item_num[rcvPadOrder.pad_number - 1]] = false;
 //
@@ -249,7 +249,7 @@ int main(int argc, char **argv)
   // initTurtlebotPose.request.aa = 1;
 
 
-  client_initial_pose = n.serviceClient<turtlebot3_carrier_icra2017::InitTurtlebotPose>("/tb3g/initial_turtlebot_pose");
+  client_initial_pose = n.serviceClient<turtlebot3_deliver_service::InitTurtlebotPose>("/tb3g/initial_turtlebot_pose");
 
   client_initial_pose.call(initTurtlebotPose);
 
@@ -311,11 +311,11 @@ int main(int argc, char **argv)
   // poseStamped[1].pose.orientation.w = 0.984016211539;
 
 
-  // pub_pad_order_tb3g = n.advertise<turtlebot3_carrier_icra2017::PadOrder>("/tb3g/pad_order_echo", 100);
-  // pub_pad_order_tb3r = n.advertise<turtlebot3_carrier_icra2017::PadOrder>("/tb3r/pad_order_echo", 100);
-  // pub_pad_order_tb3p = n.advertise<turtlebot3_carrier_icra2017::PadOrder>("/tb3p/pad_order_echo", 100);
+  // pub_pad_order_tb3g = n.advertise<turtlebot3_deliver_service::PadOrder>("/tb3g/pad_order_echo", 100);
+  // pub_pad_order_tb3r = n.advertise<turtlebot3_deliver_service::PadOrder>("/tb3r/pad_order_echo", 100);
+  // pub_pad_order_tb3p = n.advertise<turtlebot3_deliver_service::PadOrder>("/tb3p/pad_order_echo", 100);
   //
-  // pub_is_item_available = n.advertise<turtlebot3_carrier_icra2017::AvailableItemList>("/is_item_available", 100);
+  // pub_is_item_available = n.advertise<turtlebot3_deliver_service::AvailableItemList>("/is_item_available", 100);
   //
   // pub_play_sound = n.advertise<std_msgs::String>("/tb3g/play_sound_file", 100);
   //

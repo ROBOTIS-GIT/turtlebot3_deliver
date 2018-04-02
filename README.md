@@ -9,11 +9,9 @@
 ## ROBOTIS e-Manual for TurtleBot3
 - [ROBOTIS e-Manual for TurtleBot3](http://turtlebot3.robotis.com/)
 
-## Wiki for turtlebot3_applications Packages
-- http://wiki.ros.org/_deliver (metapackage)
-- http://wiki.ros.org/turtlebot3_carrier_icra2017
-- http://wiki.ros.org/turtlebot3_core_icra2017
-- http://wiki.ros.org/turtlebot3_deliver_pad
+## Wiki for turtlebot3_deliver Packages
+- http://wiki.ros.org/turtlebot3_deliver (metapackage)
+- http://wiki.ros.org/turtlebot3_deliver_service
 
 ## Open Source related to TurtleBot3
 - [turtlebot3](https://github.com/ROBOTIS-GIT/turtlebot3)
@@ -36,4 +34,4 @@
 - [ROBOTIS e-Manual for Dynamixel Workbench](http://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_workbench/)
 - [Website for TurtleBot Series](http://www.turtlebot.com/)
 - [e-Book for TurtleBot3](https://community.robotsource.org/t/download-the-ros-robot-programming-book-for-free/51/)
-- [Videos for TurtleBot3 ](https://www.youtube.com/playlist?list=PLRG6WP3c31_XI3wlvHlx2Mp8BYqgqDURU)
+- [Videos for TurtleBot3](https://www.youtube.com/playlist?list=PLRG6WP3c31_XI3wlvHlx2Mp8BYqgqDURU)

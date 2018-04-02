@@ -1,0 +1,6 @@
+<launch>
+  <rosparam file="$(find turtlebot3_deliver_service)/param/target_pose.yaml" command="load" />
+
+  <!-- service_core -->
+  <node pkg="turtlebot3_deliver_service" type="service_core" name="service_core" output="screen" />
+</launch>

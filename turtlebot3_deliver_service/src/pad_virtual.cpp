@@ -1,6 +1,6 @@
 #include "ros/ros.h"
-#include "turtlebot3_carrier_icra2017/PadOrder.h"
-#include "turtlebot3_carrier_icra2017/ServiceStatus.h"
+#include "turtlebot3_deliver_service/PadOrder.h"
+#include "turtlebot3_deliver_service/ServiceStatus.h"
 
 class PadVirtual
 {
@@ -11,7 +11,7 @@ public:
 
     ros::param::get("~robot_num", robot_num);
 
-    pub_pad_order = nh_.advertise<turtlebot3_carrier_icra2017::PadOrder>("pad_order", 1);
+    pub_pad_order = nh_.advertise<turtlebot3_deliver_service::PadOrder>("pad_order", 1);
 
     subServiceStatus = nh_.subscribe("service_status", 1, &PadVirtual::cbCheckServiceStatus, this);
 
@@ -22,7 +22,7 @@ public:
     // is_pose_initialized = fnSetInitialPose();
   }
 
-  void cbCheckServiceStatus(const turtlebot3_carrier_icra2017::ServiceStatus rcvServiceStatus)
+  void cbCheckServiceStatus(const turtlebot3_deliver_service::ServiceStatus rcvServiceStatus)
   {
     item_num_chosen_by_pad = rcvServiceStatus.item_num_chosen_by_pad;
     is_item_available = rcvServiceStatus.is_item_available;
@@ -44,7 +44,7 @@ public:
 
     while (ros::ok())
     {
-      turtlebot3_carrier_icra2017::PadOrder padOrder;
+      turtlebot3_deliver_service::PadOrder padOrder;
 
       std::string inputString;
       std::cout << "Which item would you choose? (0. Bread 1. Drink 2. Snack or q. Quit)" << '\n';
