@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>turtlebot3_deliver_service</name>
+  <version>0.1.0</version>
+  <description>
+    ROS packages for the turtlebot3_deliver_service
+  </description>
+  <license>Apache 2.0</license>
+  <author email="rwjung@robotis.com">Leon Jung</author>
+  <maintainer email="pyo@robotis.com">Pyo</maintainer>
+  <url type="website">http://wiki.ros.org/turtlebot3_deliver_service</url>
+  <url type="emanual">http://turtlebot3.robotis.com</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_deliver</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_deliver/issues</url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>actionlib_msgs</depend>
+  <depend>move_base_msgs</depend>
+  <depend>tf2_msgs</depend>
+  <depend>turtlebot3_msgs</depend>
+  <build_depend>message_generation</build_depend>
+  <build_export_depend>message_runtime</build_export_depend>
+  <exec_depend>message_runtime</exec_depend>
+</package>

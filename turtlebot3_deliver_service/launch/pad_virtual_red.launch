@@ -1,0 +1,8 @@
+<launch>
+  <group ns="tb3r">
+    <!-- pad_virtual -->
+    <node pkg="turtlebot3_deliver_service" type="pad_virtual" name="pad_virtual" output="screen">
+      <param name="robot_num" type="int" value="2" />
+    </node>
+  </group>
+</launch>
